@@ -1,0 +1,17 @@
+{
+  "name": "real-estate-mern",
+  "version": "1.0.0",
+  "description": "Jungle Vally Real Estate Market Place",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon api/index.js",
+    "start": "node api/index.js"
+  },
+  "author": "Vishwas Prabhu",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "nodemon": "^3.0.3"
+  }
+}
