@@ -2,6 +2,9 @@ import User from "../modules/user_module.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { errorHandler } from "../utils/error.js";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export const signup = async (req, res, next) => {
     const { userName, email, password } = req.body;
@@ -28,11 +31,10 @@ export const signin = async (req, res, next) => {
             return next(errorHandler(401, "Wrong Credentials"));
         }
         const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
-        const { password: userPassword, ...res } = validUser._doc;
+        const { password: userPassword, ...rest } = validUser._doc;
         res.cookie("access_token", token, {
-            httpOnly: true,
-            secure: true,
-        }).status(200).json("User Logged In Successfully");
+            httpOnly: true
+        }).status(200).json(rest);
     }
     catch (error) {
         next(error);

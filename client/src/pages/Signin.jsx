@@ -1,13 +1,17 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux';
+import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSlice';
 
 const SignIn = () => {
 
   const [formDate, setFormDate] = useState({});
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+  // const [error, setError] = useState(null);
+  // const [loading, setLoading] = useState(false);
+  const { loading, error } = useSelector((state) => state.user);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormDate(
@@ -23,7 +27,8 @@ const SignIn = () => {
     // console.log(formDate);
 
     try {
-      setLoading(true);
+      // setLoading(true);
+      dispatch(signInStart());
 
       const res = await fetch("/api/auth/signin", {
         method: "POST",
@@ -35,16 +40,19 @@ const SignIn = () => {
 
       const data = await res.json();
       if (data.success === false) {
-        setLoading(false);
-        setError(data.message);
+        // setLoading(false);
+        // setError(data.message);
+        dispatch(signInFailure(data.message));
         return;
       }
-      setLoading(false);
-      setError(null);
+      // setLoading(false);
+      // setError(null);
+      dispatch(signInSuccess(data));
       navigate("/");
     } catch (error) {
-      setLoading(false);
-      setError(error.message);
+      // setLoading(false);
+      // setError(error.message);
+      dispatch(signInFailure(error.message));
     }
   }
 
@@ -56,8 +64,7 @@ const SignIn = () => {
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input type="email" id="email" placeholder="Email" className="border p-3 rounded-lg" onChange={handleChange} />
         <input type="password" id="password" placeholder="Password" className="border p-3 rounded-lg" onChange={handleChange} />
-        <button disabled={loading} className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80">{loading ? "Loading..." : "Sign in"}</button>
-        {/* <button className="bg-red-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80">Continue with google</button> */}
+        <button disabled={loading} className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80">{loading ? "Loading..." : "Sign In"}</button>
       </form>
 
       <div className='flex gap-2 mt-5'>
