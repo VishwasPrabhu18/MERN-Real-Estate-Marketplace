@@ -47,7 +47,7 @@ const UpdateListing = () => {
      };
 
     fetchListing();
-  }, []);
+  }, [params.listingId]);
 
   const handleImageSubmit = (e) => {
     e.preventDefault();

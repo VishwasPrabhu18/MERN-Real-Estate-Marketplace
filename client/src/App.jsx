@@ -5,12 +5,13 @@ import PrivateRoute from './components/PrivateRoute';
 
 import {
   About,
- CreateListing,
- Home,
- Profile,
- SignIn,
- SignUp,
- UpdateListing,
+  CreateListing,
+  Home,
+  Listing,
+  Profile,
+  SignIn,
+  SignUp,
+  UpdateListing,
 } from './pages';
 
 const App = () => {
@@ -22,6 +23,7 @@ const App = () => {
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/about" element={<About />} />
+        <Route path="/listing/:listingId" element={<Listing />} />
         <Route element={<PrivateRoute />} >
           <Route path="/profile" element={<Profile />} />
           <Route path='/create-listing' element={<CreateListing />} />
