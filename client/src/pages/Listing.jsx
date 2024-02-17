@@ -4,17 +4,21 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import SwiperCore from 'swiper';
 import { Navigation } from "swiper/modules"
 import 'swiper/swiper-bundle.css';
+import { useSelector } from "react-redux"
 import { FaBath, FaBed, FaChair, FaMapMarkerAlt, FaParking, FaShare } from "react-icons/fa";
+import Contact from "../components/Contact";
 
 const Listing = () => {
 
   const params = useParams();
   SwiperCore.use([Navigation]);
+  const { currentUser } = useSelector((state) => state.user);
 
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [contactUser, setContactUser] = useState(false);
 
   useEffect(() => {
     const fetchListing = async () => {
@@ -109,26 +113,31 @@ const Listing = () => {
               <p className="text-slate-800 text-justify">
                 <span className="font-semibold text-black">Description - </span>
                 {listing.description}
-            </p>
-            
-            <ul className="text-green-900 font-semibold text-sm flex flex-wrao items-center gap-4 sm:gap-6">
-              <li className="flex items-center gap-1 whitespace-nowrap">
-                <FaBed className="text-lg" />
-                {listing.bedRooms> 1 ? `${listing.bedRooms} Beds` : `${listing.bedRooms} Bed`}
-              </li>
-              <li className="flex items-center gap-1 whitespace-nowrap">
-                <FaBath className="text-lg" />
-                {listing.bathRooms> 1 ? `${listing.bathRooms} Baths` : `${listing.bathRooms} Bath`}
-              </li>
-              <li className="flex items-center gap-1 whitespace-nowrap">
-                <FaParking className="text-lg" />
-                {listing.parking ? `Parking` : `No Parking`}
-              </li>
-              <li className="flex items-center gap-1 whitespace-nowrap">
-                <FaChair className="text-lg" />
-                {listing.furnished ? `Furnished` : `Not Furnished`}
-              </li>
-            </ul>
+              </p>
+
+              <ul className="text-green-900 font-semibold text-sm flex flex-wrao items-center gap-4 sm:gap-6">
+                <li className="flex items-center gap-1 whitespace-nowrap">
+                  <FaBed className="text-lg" />
+                  {listing.bedRooms > 1 ? `${listing.bedRooms} Beds` : `${listing.bedRooms} Bed`}
+                </li>
+                <li className="flex items-center gap-1 whitespace-nowrap">
+                  <FaBath className="text-lg" />
+                  {listing.bathRooms > 1 ? `${listing.bathRooms} Baths` : `${listing.bathRooms} Bath`}
+                </li>
+                <li className="flex items-center gap-1 whitespace-nowrap">
+                  <FaParking className="text-lg" />
+                  {listing.parking ? `Parking` : `No Parking`}
+                </li>
+                <li className="flex items-center gap-1 whitespace-nowrap">
+                  <FaChair className="text-lg" />
+                  {listing.furnished ? `Furnished` : `Not Furnished`}
+                </li>
+              </ul>
+
+              {currentUser && listing.userRef !== currentUser._id && !contactUser && (
+                <button onClick={() => setContactUser(true)} className="bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 p-3 mt-5">Contact Landlord</button>
+              )}
+            {contactUser && <Contact listing={listing} />}
             </div>
           </div>
         )
