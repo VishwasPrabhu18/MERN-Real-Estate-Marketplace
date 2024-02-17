@@ -2,8 +2,11 @@ import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import SwiperCore from 'swiper';
-import { Navigation } from "swiper/modules"
+import { Navigation, Autoplay } from "swiper/modules"
 import 'swiper/swiper-bundle.css';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
 import { useSelector } from "react-redux"
 import { FaBath, FaBed, FaChair, FaMapMarkerAlt, FaParking, FaShare } from "react-icons/fa";
 import Contact from "../components/Contact";
@@ -53,7 +56,14 @@ const Listing = () => {
       {listing && !loading && !error &&
         (
           <div>
-            <Swiper navigation loop={true} autoplay={{ delay: 3000 }} >
+            <Swiper
+            navigation
+            speed={1000}
+              loop={true}
+              pagination={{ clickable: true }}
+              autoplay={{ delay: 3000, disableOnInteraction: false }}
+              modules={[Autoplay, Navigation]}
+            >
               {listing.imageUrls.map((url, index) => (
                 <SwiperSlide key={index}>
                   <div
@@ -137,7 +147,7 @@ const Listing = () => {
               {currentUser && listing.userRef !== currentUser._id && !contactUser && (
                 <button onClick={() => setContactUser(true)} className="bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 p-3 mt-5">Contact Landlord</button>
               )}
-            {contactUser && <Contact listing={listing} />}
+              {contactUser && <Contact listing={listing} />}
             </div>
           </div>
         )
