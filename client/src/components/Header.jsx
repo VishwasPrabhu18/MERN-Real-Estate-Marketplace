@@ -22,7 +22,7 @@ const Header = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const searchTerm = urlParams.get('searchTerm');
     setSearchTerm(searchTerm || "");
-  }, [searchTerm]);
+  }, [location.search]);
 
   return (
     <header className="bg-slate-200 shadow-md">
