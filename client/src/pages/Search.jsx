@@ -49,7 +49,7 @@ const Search = () => {
       const res = await fetch(`/api/listing/getAllListings?${seachQuery}`);
       const data = await res.json();
 
-      if (data.length > 3) {
+      if (data.length > 4) {
         setShowMore(true);
       } else {
         setShowMore(false);
@@ -183,7 +183,7 @@ const Search = () => {
           )}
 
           {!loading && listings && listings.map((listing, idx) => {
-            if (!showMore || idx < 3) {
+            if (!showMore || idx < 4) {
               return <ListingItem key={listing._id} listing={listing} />
             }
             <ListingItem key={listing._id} listing={listing} />

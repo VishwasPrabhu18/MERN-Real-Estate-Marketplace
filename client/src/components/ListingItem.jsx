@@ -11,7 +11,7 @@ const ListingItem = ({ listing }) => {
           <p className="text-lg font-semibold text-slate-700 truncate">{listing.name}</p>
           <div className="flex items-center gap-1">
             <MdLocationOn className="h-4 w-4 text-green-700" />
-            <p className="text-sm w-full text-gray-700">{listing.address}</p>
+            <p className="text-sm w-full truncate text-gray-700">{listing.address}</p>
           </div>
           <p className="text-sm text-gray-600 line-clamp-2">{listing.description}</p>
           <p className="text-slate-500 mt-2 font-semibold">
