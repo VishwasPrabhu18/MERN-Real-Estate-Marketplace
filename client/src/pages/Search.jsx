@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
+import ListingItem from "../components/ListingItem";
 
 const Search = () => {
 
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
-  const [listing, setListing] = useState([]);
+  const [listings, setListings] = useState([]);
   const [sideBarData, setSideBarData] = useState({
     searchTerm: "",
     type: "all",
@@ -17,7 +18,7 @@ const Search = () => {
     order: "desc",
   });
 
-  useEffect(() => { 
+  useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const searchTermFromUrl = urlParams.get('searchTerm');
     const typeFromUrl = urlParams.get('type');
@@ -39,15 +40,14 @@ const Search = () => {
       });
     }
 
-    const fetchListings = async () => { 
+    const fetchListings = async () => {
       setLoading(true);
 
       const seachQuery = urlParams.toString();
-      const res = await fetch(`/api/listings/getAllListings?${seachQuery}`);
+      const res = await fetch(`/api/listing/getAllListings?${seachQuery}`);
       const data = await res.json();
-      setListing(data);
+      setListings(data);
       setLoading(false);
-      
     }
 
     fetchListings();
@@ -56,14 +56,25 @@ const Search = () => {
 
 
   const handleChange = (e) => {
-    if (e.target.id === "all" || e.target.id === "rent" || e.target.id === "sale") {
-      setSideBarData({ ...sideBarData, type: e.target.id })
+    if (
+      e.target.id === "all" ||
+      e.target.id === "rent" ||
+      e.target.id === "sale"
+    ) {
+      setSideBarData({ ...sideBarData, type: e.target.id });
     }
     if (e.target.id === "searchTerm") {
-      setSideBarData({ ...sideBarData, searchTerm: e.target.value })
+      setSideBarData({ ...sideBarData, searchTerm: e.target.value });
     }
-    if (e.target.id === "parking" || e.target.id === "furnished" || e.target.id === "offer") {
-      setSideBarData({ ...sideBarData, [e.target.id]: e.target.checked || e.target.checked === "true" ? true : false })
+    if (
+      e.target.id === "parking" ||
+      e.target.id === "furnished" ||
+      e.target.id === "offer"
+    ) {
+      setSideBarData({
+        ...sideBarData,
+        [e.target.id]: e.target.checked || e.target.checked === "true" ? true : false
+      });
     }
     if (e.target.id === "sort_order") {
       const sort = e.target.value.split("_")[0] || "created_at";
@@ -74,7 +85,7 @@ const Search = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     const urlParams = new URLSearchParams();
     urlParams.set('searchTerm', sideBarData.searchTerm);
     urlParams.set('type', sideBarData.type);
@@ -139,8 +150,20 @@ const Search = () => {
         </form>
       </div>
 
-      <div className="">
+      <div className="flex-1">
         <h1 className="text-3xl font-semibold border-b p-3 text-slate-700 mt-5">Listing Results:</h1>
+        <div className="p-7 flex flex-wrap gap-4">
+          {!loading && listings.length === 0 && (
+            <p className="text-xl text-slate-700 p-3">No Listings Found</p>
+          )}
+          {loading && (
+            <p className="text-xl text-slate-700 p-3 text-center w-full">Loading...</p>
+          )}
+
+          {!loading && listings && listings.map((listing) =>
+            <ListingItem key={listing._id} listing={listing} />
+          )}
+        </div>
       </div>
     </div>
   )
