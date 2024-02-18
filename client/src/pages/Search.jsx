@@ -8,6 +8,7 @@ const Search = () => {
 
   const [loading, setLoading] = useState(false);
   const [listings, setListings] = useState([]);
+  const [showMore, setShowMore] = useState(false);
   const [sideBarData, setSideBarData] = useState({
     searchTerm: "",
     type: "all",
@@ -42,10 +43,17 @@ const Search = () => {
 
     const fetchListings = async () => {
       setLoading(true);
+      setShowMore(false);
 
       const seachQuery = urlParams.toString();
       const res = await fetch(`/api/listing/getAllListings?${seachQuery}`);
       const data = await res.json();
+
+      if (data.length > 3) {
+        setShowMore(true);
+      } else {
+        setShowMore(false);
+      }
       setListings(data);
       setLoading(false);
     }
@@ -98,6 +106,20 @@ const Search = () => {
     const searchQuery = urlParams.toString();
     navigate(`/search?${searchQuery}`);
   };
+
+  const onShowMoreClick = async () => { 
+    const numberOfListings = listings.length;
+    const urlParams = new URLSearchParams(location.search);
+    const startIdx = numberOfListings;
+    urlParams.set('startIndex', startIdx);
+    const searchQuery = urlParams.toString();
+    const res = await fetch(`/api/listing/getAllListings?${searchQuery}`);
+    const data = await res.json();
+    if (data.length < 3) {
+      setShowMore(false);
+    }
+    setListings([...listings, ...data]);
+  }
 
   return (
     <div className="flex flex-col md:flex-row">
@@ -160,8 +182,16 @@ const Search = () => {
             <p className="text-xl text-slate-700 p-3 text-center w-full">Loading...</p>
           )}
 
-          {!loading && listings && listings.map((listing) =>
+          {!loading && listings && listings.map((listing, idx) => {
+            if (!showMore || idx < 3) {
+              return <ListingItem key={listing._id} listing={listing} />
+            }
             <ListingItem key={listing._id} listing={listing} />
+          })}
+          
+
+          {showMore && (
+            <button onClick={ onShowMoreClick } className="text-green-700 hover:underline p-7 text-center w-full">Show More</button>
           )}
         </div>
       </div>
